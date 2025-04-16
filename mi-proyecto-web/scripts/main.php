@@ -1,7 +1,7 @@
 <?php
 // Configuración de la conexión
 $host = "localhost"; // Cambia esto si tu servidor no es localhost
-$user = "angel"; // Usuario de la base de datos
+$user = "admin"; // Usuario de la base de datos
 $password = "1234"; // Contraseña de la base de datos
 $dbname = "ds6"; // Cambia esto por el nombre de tu base de datos
 
@@ -142,5 +142,5 @@ function obtenerNacionalidades($conn) {
 }
 
 // Cerrar la conexión
-$conn->close();
+//$conn->close();
 ?>
