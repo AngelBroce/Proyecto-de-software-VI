@@ -50,6 +50,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         obtenerNacionalidades($conn);
         exit;
     }
+
+    // Obtener departamentos
+    if (isset($_POST['action']) && $_POST['action'] === 'getDepartamentos') {
+        obtenerDepartamentos($conn);
+        exit;
+    }
+
+    // Obtener cargos según el departamento
+    if (isset($_POST['action']) && $_POST['action'] === 'getCargosPorDepartamento' && isset($_POST['departamento'])) {
+        $departamentoId = $conn->real_escape_string($_POST['departamento']);
+        if (!ctype_digit($departamentoId)) {
+            echo json_encode(["error" => "ID de departamento inválido"]);
+            exit;
+        }
+        obtenerCargosPorDepartamento($conn, $departamentoId);
+        exit;
+    }
 }
 
 // Función para obtener provincias
@@ -117,7 +134,7 @@ function obtenerCorregimientos($conn, $distritoId) {
 
 // Función para obtener nacionalidades
 function obtenerNacionalidades($conn) {
-    $query = "SELECT id AS codigo, nombre AS nombre FROM paises";
+    $query = "SELECT codigo AS codigo, pais AS nombre FROM nacionalidad";
     $result = $conn->query($query);
 
     if (!$result) {
@@ -139,6 +156,48 @@ function obtenerNacionalidades($conn) {
     });
 
     echo json_encode(['nacionalidades' => $nacionalidades]);
+}
+
+// Función para obtener departamentos
+function obtenerDepartamentos($conn) {
+    $query = "SELECT codigo, nombre FROM departamento";
+    $result = $conn->query($query);
+
+    if (!$result) {
+        echo json_encode(["error" => "Error en la consulta: " . $conn->error]);
+        return;
+    }
+
+    $departamentos = [];
+    while ($row = $result->fetch_assoc()) {
+        $departamentos[] = [
+            'codigo' => $row['codigo'],
+            'nombre' => $row['nombre']
+        ];
+    }
+
+    echo json_encode(['departamentos' => $departamentos]);
+}
+
+// Función para obtener cargos por departamento
+function obtenerCargosPorDepartamento($conn, $departamentoId) {
+    $query = "SELECT codigo, nombre FROM cargo WHERE dep_codigo = '$departamentoId'";
+    $result = $conn->query($query);
+
+    if (!$result) {
+        echo json_encode(["error" => "Error en la consulta: " . $conn->error]);
+        return;
+    }
+
+    $cargos = [];
+    while ($row = $result->fetch_assoc()) {
+        $cargos[] = [
+            'codigo' => $row['codigo'],
+            'nombre' => $row['nombre']
+        ];
+    }
+
+    echo json_encode(['cargos' => $cargos]);
 }
 
 // Cerrar la conexión
