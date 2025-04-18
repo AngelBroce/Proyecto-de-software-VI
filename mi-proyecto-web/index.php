@@ -20,7 +20,7 @@ if ($result && $result->num_rows > 0) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión RRHH - Dashboard</title>
+  <title>Dashboard</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
@@ -31,36 +31,7 @@ if ($result && $result->num_rows > 0) {
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-circle"></div>
-        <h1 class="sidebar-title">StaffLink</h1>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <div class="nav-category">General</div>
-        <a href="#" class="nav-item active">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-
-        <a href="#" class="nav-item">
-          <i class="bi bi-people"></i>
-          <span>Gestionar Empleados</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="bi bi-person-plus"></i>
-          <span>Añadir Empleado</span>
-        </a>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <a href="#" class="nav-item">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Cerrar sesión</span>
-        </a>
-      </div>
-    </div>
+    <?php include 'styles/sidebar.php'; ?>
     
     <!-- Main Content -->
     <div class="main-content">
