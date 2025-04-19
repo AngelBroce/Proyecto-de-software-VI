@@ -77,7 +77,7 @@
                 
                 <!-- Form Card -->
                 <div class="form-card">
-                    <form action="" method="POST">
+                    <form action="scripts/addE.php" method="POST">
                         <!-- Datos Personales -->
                         <div class="form-section">
                             <div class="section-header">
@@ -308,7 +308,8 @@
                         }
                         $contrasena = generar_contraseña();
 
-                        echo "<script>alert('Correo institucional: $correo\\nContraseña: $contrasena');</script>";
+                        // Mostrar alerta sin bloquear el envío del formulario
+                        echo "<script>console.log('Correo institucional: $correo\\nContraseña: $contrasena');</script>";
                     }
                     ?>
                 </div>

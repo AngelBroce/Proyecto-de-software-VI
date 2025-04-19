@@ -2,8 +2,12 @@
 // Incluir el archivo de conexión
 include 'scripts/main.php';
 
-// Consulta para obtener los empleados 
-$query = "SELECT id_us, nombre1, apellido1 FROM empleados";
+// Corregir la consulta SQL para usar la tabla `departamento` en lugar de `departamentos`
+$query = "SELECT e.cedula, e.nombre1, e.apellido1, d.nombre AS departamento, c.nombre AS puesto, e.estado 
+          FROM empleados e 
+          LEFT JOIN departamento d ON e.departamento = d.codigo 
+          LEFT JOIN cargo c ON e.cargo = c.codigo";
+
 $result = $conn->query($query);
 
 // Verificar si hay resultados
@@ -176,20 +180,20 @@ if ($result && $result->num_rows > 0) {
                   </thead>
                   <tbody>
                     <?php if (!empty($empleados)): ?>
-                    <?php foreach ($empleados as $empleado): ?>
+                    <?php foreach ($empleados as $index => $empleado): ?>
                         <tr>
-                            <td><?= htmlspecialchars($empleado['id']) ?></td>
-                            <td><?= htmlspecialchars($empleado['nombre_completo']) ?></td>
-                            <td><?= htmlspecialchars($empleado['puesto']) ?></td>
-                            <td><?= htmlspecialchars($empleado['departamento']) ?></td>
+                            <td><?= $index + 1 ?></td>
+                            <td><?= htmlspecialchars($empleado['nombre1'] . ' ' . $empleado['apellido1']) ?></td>
+                            <td><?= htmlspecialchars($empleado['puesto'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($empleado['departamento'] ?? 'N/A') ?></td>
                             <td><?= $empleado['estado'] == 1 ? 'Activo' : 'Inactivo' ?></td>
                         </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">No hay empleados registrados.</td>
-                    </tr>
-                <?php endif; ?>
+                    <?php else: ?>
+                        <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No hay empleados registrados.</td>
+                        </tr>
+                    <?php endif; ?>
                   </tbody>
                 </table>
               </div>
