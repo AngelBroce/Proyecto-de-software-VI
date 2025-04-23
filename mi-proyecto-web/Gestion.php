@@ -114,32 +114,36 @@
                                     <th>Departamento</th>
                                     <th>Cargo</th>
                                     <th>Fecha Contratación</th>
+                                    <th>Cédula</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <?php
+                            // Conexión a la base de datos
                             $host = "localhost";
                             $usuario = "admin";
                             $contrasena = "1234";
                             $basededatos = "ds6";
-
                             $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
+
                             if ($conn->connect_error) {
                                 die("Conexión fallida: " . $conn->connect_error);
                             }
 
-                            $sql = "SELECT CONCAT(nombre1, ' ', apellido1) AS nombre, correo, departamento, cargo, f_contra, IF(estado = 1, 'Activo', 'Inactivo') AS estado FROM empleados";
-                            // Generar ID automáticamente en el código
+                            // Inicializamos el arreglo para los IDs
+                            $ids = [];
                             $id = 1;
-                            $ids = []; // Arreglo para almacenar los IDs generados
+
+                            // Consultar empleados
+                            $sql = "SELECT CONCAT(nombre1, ' ', apellido1) AS nombre, correo, departamento, cargo, f_contra, cedula, estado FROM empleados";
                             $result = $conn->query($sql);
                             ?>
                             <tbody>
                             <?php
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    $ids[] = $id; // Guardar el ID en el arreglo
+                                    $ids[] = $id;
                                     echo "<tr>";
                                     echo "<td>" . $id++ . "</td>";
                                     echo "<td>" . $row['nombre'] . "</td>";
@@ -147,7 +151,8 @@
                                     echo "<td>" . $row['departamento'] . "</td>";
                                     echo "<td>" . $row['cargo'] . "</td>";
                                     echo "<td>" . $row['f_contra'] . "</td>";
-                                    echo "<td><span class='status-badge " . ($row['estado'] == 'Activo' ? 'active' : 'inactive') . "'>" . $row['estado'] . "</span></td>";
+                                    echo "<td>" . $row['cedula'] . "</td>";
+                                    echo "<td><span class='status-badge " . ($row['estado'] == 1 ? 'active' : 'inactive') . "'>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</span></td>";
                                     echo "<td>";
                                     echo "<div class='action-buttons'>";
                                     echo "<button class='btn btn-sm btn-icon' title='Ver detalles'><i class='bi bi-eye'></i></button>";
@@ -158,103 +163,59 @@
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='8'>No hay empleados registrados.</td></tr>";
+                                echo "<tr><td colspan='9'>No hay empleados registrados.</td></tr>";
                             }
-                            $conn->close();
                             ?>
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Pagination -->
-                    <div class="pagination-container">
-                        <div class="pagination-info">Mostrando 1 a 6 de 120 registros</div>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                </div>
+
+                <!-- Deleted Employees Table -->
+                <div class="table-card">
+                    <h3>Empleados Eliminados</h3>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Departamento</th>
+                                    <th>Cargo</th>
+                                    <th>Fecha Contratación</th>
+                                    <th>Cédula</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <?php
+                            // Consultar empleados eliminados
+                            $sql_inactivos = "SELECT CONCAT(nombre1, ' ', apellido1) AS nombre, correo, departamento, cargo, f_contra, cedula, estado FROM e_eliminados";
+                            $id_inactivos = 1;
+                            $result_inactivos = $conn->query($sql_inactivos);
+                            ?>
+                            <tbody>
+                            <?php
+                            if ($result_inactivos->num_rows > 0) {
+                                while ($row = $result_inactivos->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . $id_inactivos++ . "</td>";
+                                    echo "<td>" . $row['nombre'] . "</td>";
+                                    echo "<td>" . $row['correo'] . "</td>";
+                                    echo "<td>" . $row['departamento'] . "</td>";
+                                    echo "<td>" . $row['cargo'] . "</td>";
+                                    echo "<td>" . $row['f_contra'] . "</td>";
+                                    echo "<td>" . $row['cedula'] . "</td>";
+                                    echo "<td><span class='status-badge inactive'>Eliminado</span></td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='8'>No hay empleados eliminados.</td></tr>";
+                            }
+                            ?>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Employee Detail Modal -->
-    <div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="employeeDetailModalLabel">Detalles del Empleado</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="employee-detail-header">
-                        <div class="employee-avatar">MR</div>
-                        <div class="employee-info">
-                            <h3>María Rodríguez</h3>
-                            <p>Gerente de RRHH</p>
-                            <span class="status-badge active">Activo</span>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h5>Información Personal</h5>
-                            <ul class="detail-list">
-                                <li><span>ID:</span> 001</li>
-                                <li><span>Correo:</span> maria.rodriguez@empresa.com</li>
-                                <li><span>Teléfono:</span> +1 234 567 890</li>
-                                <li><span>Fecha Nacimiento:</span> 15/05/1985</li>
-                                <li><span>Dirección:</span> Calle Principal 123, Ciudad</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Información Laboral</h5>
-                            <ul class="detail-list">
-                                <li><span>Departamento:</span> RRHH</li>
-                                <li><span>Cargo:</span> Gerente</li>
-                                <li><span>Fecha Contratación:</span> 15/03/2022</li>
-                                <li><span>Supervisor:</span> Carlos Gómez</li>
-                                <li><span>Salario:</span> $5,000.00</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas eliminar a este empleado? Esta acción no se puede deshacer.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -263,6 +224,42 @@
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JavaScript -->
-    <script src="scripts/Gestion-script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const cedula = row.querySelector('td:nth-child(7)').textContent.trim();  // Cédula en la columna 7
+
+                    // Mostrar el modal de confirmación
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                    deleteModal.show();
+
+                    // Configurar el botón de confirmación dentro del modal
+                    const confirmButton = document.querySelector('#deleteConfirmModal .btn-danger');
+                    confirmButton.onclick = function() {
+                        fetch('scripts/eliminarE.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `cedula=${cedula}`  // Ahora enviamos la cédula
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            alert(data);
+                            location.reload();  // Recargar la página después de la eliminación
+                        })
+                        .catch(error => console.error('Error:', error));
+
+                        // Cerrar el modal después de confirmar
+                        deleteModal.hide();
+                    };
+                });
+            });
+        });
+    </script>
 </body>
 </html>
