@@ -85,7 +85,7 @@
                 <!-- Employees Table -->
                 <div class="table-card">
                     <div class="table-header">
-                        <h3>Empleados Registrados</h3>
+                        <h3>Historial Empleados Registrados</h3>
                         <div class="table-actions">
                             <button class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-download"></i> Exportar
@@ -173,7 +173,9 @@
 
                 <!-- Deleted Employees Table -->
                 <div class="table-card">
-                    <h3>Empleados Eliminados</h3>
+                    <div class="table-header">
+                        <h3>Historial de Empleados Eliminados</h3>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
