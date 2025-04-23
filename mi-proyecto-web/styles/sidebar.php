@@ -16,7 +16,7 @@
       <i class="bi bi-people"></i>
       <span>Gestionar Empleados</span>
     </a>
-    <a href="creacionU.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'añadir_empleado.php' ? 'active' : '' ?>">
+    <a href="creacionU.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'creacionU.php' ? 'active' : '' ?>">
       <i class="bi bi-person-plus"></i>
       <span>Añadir Empleado</span>
     </a>

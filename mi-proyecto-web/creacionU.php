@@ -26,36 +26,8 @@
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo-circle"></div>
-                <h1 class="sidebar-title">StaffLink</h1>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-category">General</div>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-people"></i>
-                    <span>Gestionar Empleados</span>
-                </a>
-                <a href="#" class="nav-item active">
-                    <i class="bi bi-person-plus"></i>
-                    <span>Añadir Empleado</span>
-                </a>
-                
-            </nav>
-            
-            <div class="sidebar-footer">
-                <a href="#" class="nav-item">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Cerrar sesión</span>
-                </a>
-            </div>
-        </div>
+        <!-- Sidebar -->
+        <?php include 'styles/sidebar.php'; ?>
         
         <!-- Main Content -->
         <div class="main-content">
