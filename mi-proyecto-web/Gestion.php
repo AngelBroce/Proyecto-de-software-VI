@@ -118,169 +118,50 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
+                            <?php
+                            $host = "localhost";
+                            $usuario = "admin";
+                            $contrasena = "1234";
+                            $basededatos = "ds6";
+
+                            $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
+                            if ($conn->connect_error) {
+                                die("Conexión fallida: " . $conn->connect_error);
+                            }
+
+                            $sql = "SELECT CONCAT(nombre1, ' ', apellido1) AS nombre, correo, departamento, cargo, f_contra, IF(estado = 1, 'Activo', 'Inactivo') AS estado FROM empleados";
+                            // Generar ID automáticamente en el código
+                            $id = 1;
+                            $ids = []; // Arreglo para almacenar los IDs generados
+                            $result = $conn->query($sql);
+                            ?>
                             <tbody>
-                                <tr>
-                                    <td>001</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #e2d9f3;">MR</div>
-                                            <div>María Rodríguez</div>
-                                        </div>
-                                    </td>
-                                    <td>maria.rodriguez@empresa.com</td>
-                                    <td>RRHH</td>
-                                    <td>Gerente</td>
-                                    <td>15/03/2022</td>
-                                    <td><span class="status-badge active">Activo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>002</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #d0f0fd;">JL</div>
-                                            <div>Juan López</div>
-                                        </div>
-                                    </td>
-                                    <td>juan.lopez@empresa.com</td>
-                                    <td>IT</td>
-                                    <td>Desarrollador</td>
-                                    <td>05/06/2023</td>
-                                    <td><span class="status-badge active">Activo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>003</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #f8d7e9;">CP</div>
-                                            <div>Carlos Pérez</div>
-                                        </div>
-                                    </td>
-                                    <td>carlos.perez@empresa.com</td>
-                                    <td>Ventas</td>
-                                    <td>Ejecutivo</td>
-                                    <td>12/01/2021</td>
-                                    <td><span class="status-badge active">Activo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>004</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #ffda6a;">LG</div>
-                                            <div>Laura Gómez</div>
-                                        </div>
-                                    </td>
-                                    <td>laura.gomez@empresa.com</td>
-                                    <td>Marketing</td>
-                                    <td>Diseñadora</td>
-                                    <td>20/09/2022</td>
-                                    <td><span class="status-badge active">Activo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>005</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #d0f0fd;">AM</div>
-                                            <div>Ana Martínez</div>
-                                        </div>
-                                    </td>
-                                    <td>ana.martinez@empresa.com</td>
-                                    <td>Finanzas</td>
-                                    <td>Contadora</td>
-                                    <td>08/04/2023</td>
-                                    <td><span class="status-badge active">Activo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>006</td>
-                                    <td>
-                                        <div class="employee-name">
-                                            <div class="avatar" style="background-color: #e2d9f3;">RD</div>
-                                            <div>Roberto Díaz</div>
-                                        </div>
-                                    </td>
-                                    <td>roberto.diaz@empresa.com</td>
-                                    <td>IT</td>
-                                    <td>Analista</td>
-                                    <td>15/07/2021</td>
-                                    <td><span class="status-badge inactive">Inactivo</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-sm btn-icon" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-icon delete" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    $ids[] = $id; // Guardar el ID en el arreglo
+                                    echo "<tr>";
+                                    echo "<td>" . $id++ . "</td>";
+                                    echo "<td>" . $row['nombre'] . "</td>";
+                                    echo "<td>" . $row['correo'] . "</td>";
+                                    echo "<td>" . $row['departamento'] . "</td>";
+                                    echo "<td>" . $row['cargo'] . "</td>";
+                                    echo "<td>" . $row['f_contra'] . "</td>";
+                                    echo "<td><span class='status-badge " . ($row['estado'] == 'Activo' ? 'active' : 'inactive') . "'>" . $row['estado'] . "</span></td>";
+                                    echo "<td>";
+                                    echo "<div class='action-buttons'>";
+                                    echo "<button class='btn btn-sm btn-icon' title='Ver detalles'><i class='bi bi-eye'></i></button>";
+                                    echo "<button class='btn btn-sm btn-icon' title='Editar'><i class='bi bi-pencil'></i></button>";
+                                    echo "<button class='btn btn-sm btn-icon delete' title='Eliminar'><i class='bi bi-trash'></i></button>";
+                                    echo "</div>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='8'>No hay empleados registrados.</td></tr>";
+                            }
+                            $conn->close();
+                            ?>
                             </tbody>
                         </table>
                     </div>
