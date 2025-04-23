@@ -125,10 +125,20 @@
                             $usuario = "admin";
                             $contrasena = "1234";
                             $basededatos = "ds6";
-                            $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
 
-                            if ($conn->connect_error) {
-                                die("Conexión fallida: " . $conn->connect_error);
+                            // Ajustar configuraciones de tiempo de espera
+                            ini_set('mysqli.connect_timeout', 300);
+                            ini_set('default_socket_timeout', 300);
+
+                            try {
+                                $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
+
+                                if ($conn->connect_error) {
+                                    throw new Exception("Error al conectar con la base de datos: " . $conn->connect_error);
+                                }
+                            } catch (Exception $e) {
+                                error_log($e->getMessage());
+                                die("No se pudo establecer conexión con la base de datos. Por favor, verifica que el servidor MySQL esté activo y las credenciales sean correctas.");
                             }
 
                             // Inicializamos el arreglo para los IDs
@@ -223,45 +233,71 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este empleado?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete');
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.delete');
 
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const cedula = row.querySelector('td:nth-child(7)').textContent.trim();  // Cédula en la columna 7
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const cedula = row.querySelector('td:nth-child(7)').textContent.trim(); // Cédula en la columna 7
 
-                    // Mostrar el modal de confirmación
-                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                    deleteModal.show();
+                // Mostrar el modal de confirmación
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                deleteModal.show();
 
-                    // Configurar el botón de confirmación dentro del modal
-                    const confirmButton = document.querySelector('#deleteConfirmModal .btn-danger');
-                    confirmButton.onclick = function() {
-                        fetch('scripts/eliminarE.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: `cedula=${cedula}`  // Ahora enviamos la cédula
-                        })
-                        .then(response => response.text())
-                        .then(data => {
-                            alert(data);
-                            location.reload();  // Recargar la página después de la eliminación
-                        })
-                        .catch(error => console.error('Error:', error));
+                // Configurar el botón de confirmación dentro del modal
+                const confirmButton = document.querySelector('#deleteConfirmModal .btn-danger');
+                confirmButton.onclick = function() {
+                    if (!cedula) {
+                        alert('Error: No se recibió la cédula del empleado.');
+                        return;
+                    }
 
-                        // Cerrar el modal después de confirmar
-                        deleteModal.hide();
-                    };
-                });
+                    // Enviar la solicitud al archivo eliminarE.php con la cédula
+                    fetch('scripts/eliminarE.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `cedula=${encodeURIComponent(cedula)}` // Pasar la cédula como parámetro
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // Mostrar la respuesta de la eliminación
+                        location.reload(); // Recargar la página después de eliminar
+                    })
+                    .catch(error => console.error('Error:', error));
+
+                    // Cerrar el modal después de confirmar
+                    deleteModal.hide();
+                };
             });
         });
+    });
     </script>
+
 </body>
 </html>
