@@ -638,5 +638,6 @@
             });
         }
     </script>
+    <script src="scripts/Gestion-script.js"></script>
 </body>
 </html>

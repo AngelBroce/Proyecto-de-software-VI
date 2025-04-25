@@ -32,9 +32,9 @@
                             <input type="text" class="search-input" id="searchInput" placeholder="Buscar empleado...">
                         </div>
                         
-                        <button class="btn btn-primary add-employee-btn">
+                        <a href="creacionU.php" class="btn btn-primary add-employee-btn">
                             <i class="bi bi-person-plus"></i> Añadir Empleado
-                        </button>
+                        </a>
                     </div>
                 </div>
                 
@@ -45,19 +45,37 @@
                             <label>Departamento</label>
                             <select class="form-select" id="departmentFilter">
                                 <option value="">Todos</option>
-                                <option value="IT">IT</option>
-                                <option value="RRHH">RRHH</option>
-                                <option value="Ventas">Ventas</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Finanzas">Finanzas</option>
+                                <?php
+                                // Conexión a la base de datos
+                                $host = "localhost";
+                                $usuario = "admin";
+                                $contrasena = "1234";
+                                $basededatos = "ds6";
+
+                                $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
+                                if ($conn->connect_error) {
+                                    die("Conexión fallida: " . $conn->connect_error);
+                                }
+
+                                // Consultar departamentos únicos
+                                $sql_departamentos = "SELECT DISTINCT d.nombre FROM departamento d 
+                                                     INNER JOIN empleados e ON d.codigo = e.departamento";
+                                $result_departamentos = $conn->query($sql_departamentos);
+
+                                if ($result_departamentos->num_rows > 0) {
+                                    while ($row = $result_departamentos->fetch_assoc()) {
+                                        echo "<option value='" . $row['nombre'] . "'>" . $row['nombre'] . "</option>";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <label>Estado</label>
                             <select class="form-select" id="statusFilter">
                                 <option value="">Todos</option>
-                                <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -87,7 +105,7 @@
                     <div class="table-header">
                         <h3>Historial Empleados Registrados</h3>
                         <div class="table-actions">
-                            <button class="btn btn-sm btn-outline-secondary">
+                            <button class="btn btn-sm btn-outline-secondary" id="exportBtn">
                                 <i class="bi bi-download"></i> Exportar
                             </button>
                             <div class="dropdown">
@@ -120,52 +138,34 @@
                                 </tr>
                             </thead>
                             <?php
-                            // Conexión a la base de datos
-                            $host = "localhost";
-                            $usuario = "admin";
-                            $contrasena = "1234";
-                            $basededatos = "ds6";
-
-                            // Ajustar configuraciones de tiempo de espera
-                            ini_set('mysqli.connect_timeout', 300);
-                            ini_set('default_socket_timeout', 300);
-
-                            try {
-                                $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
-
-                                if ($conn->connect_error) {
-                                    throw new Exception("Error al conectar con la base de datos: " . $conn->connect_error);
-                                }
-                            } catch (Exception $e) {
-                                error_log($e->getMessage());
-                                die("No se pudo establecer conexión con la base de datos. Por favor, verifica que el servidor MySQL esté activo y las credenciales sean correctas.");
-                            }
-
-                            // Inicializamos el arreglo para los IDs
-                            $ids = [];
+                            // Consultar empleados con información de departamento y cargo
+                            $sql = "SELECT e.cedula, CONCAT(e.nombre1, ' ', e.apellido1) AS nombre, e.correo, 
+                                   d.nombre AS departamento_nombre, c.nombre AS cargo_nombre, 
+                                   e.f_contra, e.estado 
+                                   FROM empleados e 
+                                   LEFT JOIN departamento d ON e.departamento = d.codigo 
+                                   LEFT JOIN cargo c ON e.cargo = c.codigo";
+                            
+                            // Generar ID automáticamente en el código
                             $id = 1;
-
-                            // Consultar empleados
-                            $sql = "SELECT CONCAT(nombre1, ' ', apellido1) AS nombre, correo, departamento, cargo, f_contra, cedula, estado FROM empleados";
                             $result = $conn->query($sql);
                             ?>
                             <tbody>
                             <?php
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    $ids[] = $id;
                                     echo "<tr>";
                                     echo "<td>" . $id++ . "</td>";
                                     echo "<td>" . $row['nombre'] . "</td>";
                                     echo "<td>" . $row['correo'] . "</td>";
-                                    echo "<td>" . $row['departamento'] . "</td>";
-                                    echo "<td>" . $row['cargo'] . "</td>";
+                                    echo "<td>" . $row['departamento_nombre'] . "</td>";
+                                    echo "<td>" . $row['cargo_nombre'] . "</td>";
                                     echo "<td>" . $row['f_contra'] . "</td>";
                                     echo "<td>" . $row['cedula'] . "</td>";
                                     echo "<td><span class='status-badge " . ($row['estado'] == 1 ? 'active' : 'inactive') . "'>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</span></td>";
                                     echo "<td>";
                                     echo "<div class='action-buttons'>";
-                                    echo "<button class='btn btn-sm btn-icon' title='Ver detalles'><i class='bi bi-eye'></i></button>";
+                                    echo "<button class='btn btn-sm btn-icon view-details' data-cedula='" . $row['cedula'] . "' title='Ver detalles'><i class='bi bi-eye'></i></button>";
                                     echo "<button class='btn btn-sm btn-icon' title='Editar'><i class='bi bi-pencil'></i></button>";
                                     echo "<button class='btn btn-sm btn-icon delete' title='Eliminar'><i class='bi bi-trash'></i></button>";
                                     echo "</div>";
@@ -208,7 +208,7 @@
                             ?>
                             <tbody>
                             <?php
-                            if ($result_inactivos->num_rows > 0) {
+                            if ($result_inactivos && $result_inactivos->num_rows > 0) {
                                 while ($row = $result_inactivos->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td>" . $id_inactivos++ . "</td>";
@@ -224,6 +224,9 @@
                             } else {
                                 echo "<tr><td colspan='8'>No hay empleados eliminados.</td></tr>";
                             }
+                            
+                            // Cerrar la conexión
+                            $conn->close();
                             ?>
                             </tbody>
                         </table>
@@ -233,6 +236,67 @@
         </div>
     </div>
 
+    <!-- Modal de Detalles del Empleado -->
+    <div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="employeeDetailModalLabel">Detalles del Empleado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="employeeDetails">
+                    <div class="employee-detail-header">
+                        <div class="employee-avatar" id="employeeInitials">--</div>
+                        <div class="employee-info">
+                            <h3 id="employeeName">Cargando...</h3>
+                            <p id="employeePosition">Cargando...</p>
+                            <span class="status-badge" id="employeeStatus">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Información Personal</h5>
+                            <ul class="detail-list">
+                                <li><span>Cédula:</span> <span id="employeeCedula">-</span></li>
+                                <li><span>Correo:</span> <span id="employeeEmail">-</span></li>
+                                <li><span>Teléfono:</span> <span id="employeePhone">-</span></li>
+                                <li><span>Celular:</span> <span id="employeeMobile">-</span></li>
+                                <li><span>Fecha Nacimiento:</span> <span id="employeeBirthdate">-</span></li>
+                                <li><span>Género:</span> <span id="employeeGender">-</span></li>
+                                <li><span>Estado Civil:</span> <span id="employeeMaritalStatus">-</span></li>
+                                <li><span>Tipo de Sangre:</span> <span id="employeeBloodType">-</span></li>
+                                <li><span>Nacionalidad:</span> <span id="employeeNationality">-</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Información Laboral</h5>
+                            <ul class="detail-list">
+                                <li><span>Departamento:</span> <span id="employeeDepartment">-</span></li>
+                                <li><span>Cargo:</span> <span id="employeePosition2">-</span></li>
+                                <li><span>Fecha Contratación:</span> <span id="employeeHireDate">-</span></li>
+                            </ul>
+                            
+                            <h5 class="mt-4">Dirección</h5>
+                            <ul class="detail-list">
+                                <li><span>Provincia:</span> <span id="employeeProvince">-</span></li>
+                                <li><span>Distrito:</span> <span id="employeeDistrict">-</span></li>
+                                <li><span>Corregimiento:</span> <span id="employeeCorregimiento">-</span></li>
+                                <li><span>Calle:</span> <span id="employeeStreet">-</span></li>
+                                <li><span>Casa:</span> <span id="employeeHouse">-</span></li>
+                                <li><span>Comunidad:</span> <span id="employeeCommunity">-</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Editar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modal de Confirmación de Eliminación -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -246,7 +310,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger">Eliminar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -254,50 +318,76 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom JavaScript -->
+    <script src="scripts/Gestion-script.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const deleteButtons = document.querySelectorAll('.delete');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        let selectedCedula = null;
 
         deleteButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const cedula = row.querySelector('td:nth-child(7)').textContent.trim(); // Cédula en la columna 7
-
-                // Mostrar el modal de confirmación
-                const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-                deleteModal.show();
-
-                // Configurar el botón de confirmación dentro del modal
-                const confirmButton = document.querySelector('#deleteConfirmModal .btn-danger');
-                confirmButton.onclick = function() {
-                    if (!cedula) {
-                        alert('Error: No se recibió la cédula del empleado.');
-                        return;
-                    }
-
-                    // Enviar la solicitud al archivo eliminarE.php con la cédula
-                    fetch('scripts/eliminarE.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `cedula=${encodeURIComponent(cedula)}` // Pasar la cédula como parámetro
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data); // Mostrar la respuesta de la eliminación
-                        location.reload(); // Recargar la página después de eliminar
-                    })
-                    .catch(error => console.error('Error:', error));
-
-                    // Cerrar el modal después de confirmar
-                    deleteModal.hide();
-                };
+                selectedCedula = row.querySelector('td:nth-child(7)').textContent.trim(); // Cédula en la columna 7
             });
         });
+
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (!selectedCedula) {
+                    alert('Error: No se recibió la cédula del empleado.');
+                    return;
+                }
+
+                // Enviar la solicitud al archivo eliminarE.php con la cédula
+                fetch('scripts/eliminarE.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `cedula=${encodeURIComponent(selectedCedula)}`
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // Mostrar la respuesta de la eliminación
+                    location.reload(); // Recargar la página después de eliminar
+                })
+                .catch(error => console.error('Error:', error));
+
+                // Cerrar el modal después de confirmar
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+                if (deleteModal) {
+                    deleteModal.hide();
+                }
+            });
+        }
+
+        // Exportar a Excel
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                // Crear un elemento temporal para descargar
+                let table = document.querySelector('table');
+                let tableHTML = table.outerHTML.replace(/ /g, '%20');
+                
+                // Crear un enlace de descarga
+                let downloadLink = document.createElement('a');
+                document.body.appendChild(downloadLink);
+                
+                // Nombre del archivo
+                let filename = 'empleados_' + new Date().toISOString().slice(0, 10) + '.xls';
+                
+                // Crear el enlace para descargar
+                downloadLink.href = 'data:application/vnd.ms-excel,' + tableHTML;
+                downloadLink.download = filename;
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            });
+        }
     });
     </script>
-
 </body>
 </html>
