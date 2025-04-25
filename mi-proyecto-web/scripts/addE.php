@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: application/json');
+
 $host = "localhost";
 $usuario = "admin";
 $contrasena = "1234";
@@ -6,7 +8,8 @@ $basededatos = "ds6";
 
 $conn = new mysqli($host, $usuario, $contrasena, $basededatos);
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    echo json_encode(['success' => false, 'message' => "Conexión fallida: " . $conn->connect_error]);
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre2 = $_POST['nombre2'] ?? null;
     $apellido1 = strtolower(trim($_POST['apellido1'] ?? ''));
     $apellido2 = $_POST['apellido2'] ?? null;
-    $apellidoc = $_POST['apellido_casada'] ?? null; // Corregir nombre del campo
+    $apellidoc = $_POST['apellido_casada'] ?? null;
 
     $genero = $_POST['genero'] ?? null;
     $estado_civil = $_POST['estado_civil'] ?? null;
@@ -49,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $casa = $_POST['casa'] ?? null;
     $comunidad = $_POST['comunidad'] ?? null;
     $nacionalidad = $_POST['nacionalidad'] ?? null;
-    $f_contra = $_POST['f_contratacion'] ?? null; // Corregir nombre del campo
+    $f_contra = $_POST['f_contratacion'] ?? null;
     $cargo = $_POST['cargo'] ?? null;
     $departamento = $_POST['departamento'] ?? null;
     $estado = $_POST['estado'] ?? null;
@@ -64,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt1 = $conn->prepare($sql_empleado);
     $stmt1->bind_param(
-        "sssssssssssssssssssssssssssss", // <- 29 tipos corregidos
+        "sssssssssssssssssssssssssssss",
         $cedula, $prefijo, $tomo, $asiento, $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc,
         $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento, $celular, $telefono, $correo, $contrasena,
         $provincia, $distrito, $corregimiento, $calle, $casa, $comunidad, $nacionalidad, $f_contra, $cargo,
@@ -76,16 +79,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt2 = $conn->prepare($sql_usuario);
     $stmt2->bind_param("sss", $cedula, $contrasena, $correo);
 
+    $success = false;
+    $message = "";
+
     if ($stmt1->execute() && $stmt2->execute()) {
-        echo "Empleado y usuario registrados correctamente.<br>";
-        echo "Correo institucional: <strong>$correo</strong><br>";
-        echo " Contraseña generada: <strong>$contrasena</strong>";
+        $success = true;
+        $message = "Empleado y usuario registrados correctamente.";
     } else {
-        echo "❌ Error al registrar: " . $conn->error;
+        $message = "Error al registrar: " . $conn->error;
     }
 
     $stmt1->close();
     $stmt2->close();
     $conn->close();
+
+    // Devolver respuesta en formato JSON
+    echo json_encode([
+        'success' => $success,
+        'message' => $message,
+        'email' => $correo,
+        'password' => $contrasena
+    ]);
+    exit;
 }
 ?>

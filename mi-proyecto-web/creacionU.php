@@ -21,6 +21,39 @@
         input[type="number"] {
             -moz-appearance: textfield; /* Para Firefox */
         }
+
+    /* Estilos para el modal de confirmación */
+    .success-icon {
+        font-size: 4rem;
+        color: #198754;
+        margin-bottom: 1rem;
+    }
+    
+    .confirmation-message {
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .info-box {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+    
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .info-value {
+        font-weight: 600;
+        color: #198754;
+        font-size: 1.1rem;
+        word-break: break-all;
+    }
     </style>
 </head>
 <body>
@@ -49,7 +82,7 @@
                 
                 <!-- Form Card -->
                 <div class="form-card">
-                    <form action="scripts/addE.php" method="POST">
+                    <form id="employeeForm" action="scripts/addE.php" method="POST" onsubmit="submitForm(event)">
                         <!-- Datos Personales -->
                         <div class="form-section">
                             <div class="section-header">
@@ -265,6 +298,40 @@
                             <button type="submit" class="btn btn-primary">Registrar Empleado</button>
                         </div>
                     </form>
+                    <!-- Modal de confirmación -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-success text-white">
+                                    <h5 class="modal-title" id="confirmationModalLabel">
+                                        <i class="bi bi-check-circle-fill me-2"></i>Registro Exitoso
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="text-center mb-4">
+                                        <div class="success-icon">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                    <div class="confirmation-message">
+                                        <p class="mb-3">Empleado y usuario registrados correctamente.</p>
+                                        <div class="info-box mb-3">
+                                            <div class="info-label">Correo institucional:</div>
+                                            <div class="info-value" id="emailValue">-</div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-label">Contraseña generada:</div>
+                                            <div class="info-value" id="passwordValue">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <?php
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $nombre1 = strtolower(trim($_POST['nombre1'] ?? ''));
@@ -523,6 +590,53 @@
                 document.querySelector('form').reset(); // Limpiar formulario
             }
         });
+    </script>
+    <script>
+        // Modal de Bootstrap
+        let confirmationModal;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar el modal
+            confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        });
+        
+        // Función para enviar el formulario con AJAX
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('employeeForm');
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Mostrar los datos en el modal
+                    document.getElementById('emailValue').textContent = data.email;
+                    document.getElementById('passwordValue').textContent = data.password;
+                    
+                    // Mostrar el modal
+                    confirmationModal.show();
+                    
+                    // Limpiar el formulario
+                    form.reset();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud: ' + error.message);
+            });
+        }
     </script>
 </body>
 </html>
