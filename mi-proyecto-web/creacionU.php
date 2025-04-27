@@ -93,7 +93,26 @@
                                     <!-- Fila 1 -->
                                     <div class="col-md-2">
                                         <label>Prefijo</label>
-                                        <input type="text" class="form-control" name="prefijo" maxlength="2" required>
+                                        <select class="form-select" name="prefijo" required>
+                                            <option value=""> </option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="E">E</option>
+                                            <option value="PE">PE</option>
+                                            <option value="N">N</option>
+                                            <option value="P">P</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-2">
                                         <label>Tomo</label>
@@ -157,6 +176,7 @@
                                             <option value="AB-">AB-</option>
                                             <option value="O+">O+</option>
                                             <option value="O-">O-</option>
+                                            <option value="RH">RH</option>
                                         </select>
                                     </div>
 

@@ -109,6 +109,57 @@ if ($empleado) {
         exit;
     }
 
+    // Paso 4: Mover el usuario asociado a la tabla u_eliminados
+    $sql_usuario = "SELECT * FROM usuarios WHERE cedula = ?";
+    $stmt_usuario = $conn->prepare($sql_usuario);
+    if (!$stmt_usuario) {
+        error_log("Error al preparar la consulta de selección de usuario: " . $conn->error);
+        echo "Error al preparar la consulta de selección de usuario.";
+        exit;
+    }
+    $stmt_usuario->bind_param("s", $cedula);
+    $stmt_usuario->execute();
+    $result_usuario = $stmt_usuario->get_result();
+    $usuario = $result_usuario->fetch_assoc();
+
+    if ($usuario) {
+        $sql_insert_usuario = "INSERT INTO u_eliminados (cedula, contraseña, correo_institucional) VALUES (?, ?, ?)";
+        $stmt_insert_usuario = $conn->prepare($sql_insert_usuario);
+        if (!$stmt_insert_usuario) {
+            error_log("Error al preparar la consulta de inserción en u_eliminados: " . $conn->error);
+            echo "Error al preparar la consulta de inserción en u_eliminados.";
+            exit;
+        }
+        $stmt_insert_usuario->bind_param("sss", $usuario['cedula'], $usuario['contraseña'], $usuario['correo_institucional']);
+
+        if ($stmt_insert_usuario->execute() === false) {
+            error_log("Error al insertar en u_eliminados: " . $stmt_insert_usuario->error);
+            echo "Error al mover el usuario a la tabla de usuarios eliminados.";
+            exit;
+        }
+
+        // Paso 5: Eliminar físicamente al usuario de la tabla usuarios
+        $sql_delete_usuario = "DELETE FROM usuarios WHERE cedula = ?";
+        $stmt_delete_usuario = $conn->prepare($sql_delete_usuario);
+        if (!$stmt_delete_usuario) {
+            error_log("Error al preparar la consulta de eliminación de usuario: " . $conn->error);
+            echo "Error al preparar la consulta de eliminación de usuario.";
+            exit;
+        }
+        $stmt_delete_usuario->bind_param("s", $cedula);
+
+        if ($stmt_delete_usuario->execute() === false) {
+            error_log("Error al eliminar de usuarios: " . $stmt_delete_usuario->error);
+            echo "Error al eliminar físicamente al usuario.";
+            exit;
+        }
+
+        $stmt_insert_usuario->close();
+        $stmt_delete_usuario->close();
+    }
+
+    $stmt_usuario->close();
+
     // Verificación de éxito
     if ($stmt_insert->affected_rows > 0 && $stmt_update->affected_rows > 0 && $stmt_delete->affected_rows > 0) {
         echo "Empleado marcado como inactivo, movido a la tabla de empleados eliminados y eliminado físicamente.";

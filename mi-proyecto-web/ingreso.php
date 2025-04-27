@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="styles/LogIn-styles.css">
+    <!-- Sidebar -->
 </head>
 <body>
     <div class="login-container">
+        
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
@@ -53,12 +55,12 @@
                             </div>
                             
                             <div class="auth-body">
-                                <form action="scripts/main.php" method="post">
+                                <form action="" method="post">
                                     <div class="mb-4">
-                                        <label for="username" class="form-label">Nombre de Usuario</label>
+                                        <label for="email" class="form-label">Correo Institucional</label>
                                         <div class="input-group">
-                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                            <input type="text" class="form-control" id="username" name="username" required>
+                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                            <input type="email" class="form-control" id="email" name="email" required>
                                         </div>
                                     </div>
                                     
@@ -92,5 +94,71 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
+
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
+
+        // Conexión a la base de datos
+        $conn = new mysqli('localhost', 'admin', '1234', 'ds6');
+
+        if ($conn->connect_error) {
+            die('<div class="alert alert-danger">Error de conexión: ' . $conn->connect_error . '</div>');
+        }
+
+        // Verificar cédula en la tabla usuarios
+        $sqlUsuario = "SELECT cedula FROM usuarios WHERE correo_institucional = ? AND contraseña = ?";
+        $stmtUsuario = $conn->prepare($sqlUsuario);
+
+        if (!$stmtUsuario) {
+            die('<div class="alert alert-danger">Error en la preparación de la consulta: ' . $conn->error . '</div>');
+        }
+
+        $stmtUsuario->bind_param('ss', $email, $password);
+        $stmtUsuario->execute();
+        $resultUsuario = $stmtUsuario->get_result();
+
+        if ($resultUsuario === false) {
+            die('<div class="alert alert-danger">Error en la ejecución de la consulta: ' . $stmtUsuario->error . '</div>');
+        }
+
+        if ($resultUsuario->num_rows > 0) {
+            $rowUsuario = $resultUsuario->fetch_assoc();
+            $cedula = $rowUsuario['cedula'];
+
+            // Buscar el cargo en la tabla empleados
+            $sqlEmpleado = "SELECT cargo FROM empleados WHERE cedula = ? AND cargo = '0101'";
+            $stmtEmpleado = $conn->prepare($sqlEmpleado);
+
+            if (!$stmtEmpleado) {
+                die('<div class="alert alert-danger">Error en la preparación de la consulta: ' . $conn->error . '</div>');
+            }
+
+            $stmtEmpleado->bind_param('s', $cedula);
+            $stmtEmpleado->execute();
+            $resultEmpleado = $stmtEmpleado->get_result();
+
+            if ($resultEmpleado === false) {
+                die('<div class="alert alert-danger">Error en la ejecución de la consulta: ' . $stmtEmpleado->error . '</div>');
+            }
+
+            if ($resultEmpleado->num_rows > 0) {
+                echo "<script>alert('¡Registro exitoso!'); window.location.href = 'index.php';</script>";
+                exit;
+            } else {
+                echo "<script>alert('Redirigiendo a usuario.'); window.location.href = 'usuario.php';</script>";
+                exit;
+            }
+
+            $stmtEmpleado->close();
+        } else {
+            echo '<div class="alert alert-danger">Credenciales incorrectas.</div>';
+        }
+
+        $stmtUsuario->close();
+        $conn->close();
+    }
+    ?>
 </body>
 </html>

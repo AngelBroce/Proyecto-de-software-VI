@@ -17,6 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prefijo = $_POST['prefijo'] ?? null;
     $tomo = $_POST['tomo'] ?? null;
     $asiento = $_POST['asiento'] ?? null;
+
+    // Validar prefijo
+    $opciones_prefijo = array_merge(range(1, 13), ['E', 'PE', 'N', 'P']);
+    if (!in_array($prefijo, $opciones_prefijo)) {
+        echo json_encode(['success' => false, 'message' => "Prefijo inválido"]);
+        exit;
+    }
     
     // Generar la cédula concatenando prefijo, tomo y asiento con guiones
     $cedula = $prefijo . '-' . $tomo . '-' . $asiento;

@@ -23,7 +23,7 @@
   </nav>
   
   <div class="sidebar-footer">
-    <a href="logout.php" class="nav-item">
+    <a href="ingreso.php" class="nav-item">
       <i class="bi bi-box-arrow-right"></i>
       <span>Cerrar sesión</span>
     </a>
