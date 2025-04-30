@@ -169,296 +169,8 @@ if ($tiempoEmpresa->d > 0) {
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- CSS personalizado -->
-    <link rel="stylesheet" href="styles/LogIn-styles.css">
-    <style>
-        :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #f97316;
-            --light-bg: #f9fafb;
-            --card-bg: #ffffff;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --border-color: #e5e7eb;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .profile-header {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .profile-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .stats-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stats-card .icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.5rem;
-        }
-
-        .bg-primary-light {
-            background-color: rgba(79, 70, 229, 0.1);
-            color: var(--primary-color);
-        }
-
-        .bg-success-light {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-        }
-
-        .bg-warning-light {
-            background-color: rgba(249, 115, 22, 0.1);
-            color: var(--secondary-color);
-        }
-
-        .bg-info-light {
-            background-color: rgba(6, 182, 212, 0.1);
-            color: #06b6d4;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            margin-right: 20px;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .sidebar {
-            width: 280px;
-            background-color: #1e293b;
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 0 20px 20px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .logo-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            margin-right: 10px;
-        }
-
-        .sidebar-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-        }
-
-        .nav-category {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 0 20px;
-            margin: 15px 0 10px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .nav-item i {
-            margin-right: 10px;
-            font-size: 1.1rem;
-        }
-
-        .sidebar-footer {
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-info {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .small-text {
-            font-size: 0.75rem;
-            margin-top: 5px;
-        }
-
-        .calendar-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .calendar-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .calendar-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .calendar-nav button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            cursor: pointer;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-
-        .calendar-day-header {
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            padding: 5px 0;
-        }
-
-        .calendar-day {
-            text-align: center;
-            padding: 8px 0;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .calendar-day:hover {
-            background-color: rgba(79, 70, 229, 0.1);
-        }
-
-        .calendar-day.today {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-
-        .calendar-day.other-month {
-            color: var(--text-light);
-            opacity: 0.5;
-        }
-
-        @media (max-width: 992px) {
-            .dashboard-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                padding: 10px 0;
-            }
-            
-            .profile-header {
-                flex-direction: column;
-            }
-            
-            .profile-avatar {
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles/User-styles.css">
+    
 </head>
 <body>
     <div class="dashboard-container">
@@ -469,43 +181,18 @@ if ($tiempoEmpresa->d > 0) {
                 <h1 class="sidebar-title">StaffLink</h1>
             </div>
             
-            <nav class="sidebar-nav">
-                <div class="nav-category">Principal</div>
+            <nav class="sidebar-nav">    
                 <a href="#" class="nav-item active">
-                    <i class="bi bi-house-door"></i>
-                    <span>Inicio</span>
-                </a>
-                <a href="#" class="nav-item">
                     <i class="bi bi-person"></i>
                     <span>Mi Perfil</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-calendar-event"></i>
-                    <span>Calendario</span>
-                </a>
-                
-                <div class="nav-category">Recursos</div>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-file-earmark-text"></i>
-                    <span>Documentos</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Mensajes</span>
-                </a>
-                
-                <div class="nav-category">Sistema</div>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-gear"></i>
-                    <span>Configuración</span>
-                </a>
-                <a href="ingreso.php" class="nav-item">
-                    <i class="bi bi-box-arrow-left"></i>
-                    <span>Cerrar Sesión</span>
                 </a>
             </nav>
             
             <div class="sidebar-footer">
+                <a href="ingreso-fix.php" class="nav-item">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
                 <div class="sidebar-info">
                     <p>Sistema de gestión de empleados</p>
                     <p class="small-text">Versión 1.0.2</p>
@@ -618,7 +305,7 @@ if ($tiempoEmpresa->d > 0) {
                                         <div class="info-value"><?php echo $empleado['tipo_sangre']; ?></div>
                                     </div>
                                     <div class="mb-3">
-                                        <div class="info-label">Usa Anteojos</div>
+                                        <div class="info-label">Usa Apellido de Casada</div>
                                         <div class="info-value"><?php echo $empleado['usa_ac'] ? 'Sí' : 'No'; ?></div>
                                     </div>
                                 </div>
@@ -686,83 +373,9 @@ if ($tiempoEmpresa->d > 0) {
                         </div>
                     </div>
                     
-                    <!-- Calendario y Acciones Rápidas -->
-                    <div class="col-lg-4">
-                        <div class="calendar-card mb-4">
-                            <div class="calendar-header">
-                                <div class="calendar-title">Mayo 2025</div>
-                                <div class="calendar-nav">
-                                    <button><i class="bi bi-chevron-left"></i></button>
-                                    <button><i class="bi bi-chevron-right"></i></button>
-                                </div>
-                            </div>
-                            <div class="calendar-grid">
-                                <div class="calendar-day-header">Lu</div>
-                                <div class="calendar-day-header">Ma</div>
-                                <div class="calendar-day-header">Mi</div>
-                                <div class="calendar-day-header">Ju</div>
-                                <div class="calendar-day-header">Vi</div>
-                                <div class="calendar-day-header">Sa</div>
-                                <div class="calendar-day-header">Do</div>
-                                
-                                <div class="calendar-day other-month">28</div>
-                                <div class="calendar-day other-month">29</div>
-                                <div class="calendar-day other-month">30</div>
-                                <div class="calendar-day">1</div>
-                                <div class="calendar-day">2</div>
-                                <div class="calendar-day">3</div>
-                                <div class="calendar-day">4</div>
-                                
-                                <div class="calendar-day">5</div>
-                                <div class="calendar-day">6</div>
-                                <div class="calendar-day">7</div>
-                                <div class="calendar-day">8</div>
-                                <div class="calendar-day">9</div>
-                                <div class="calendar-day">10</div>
-                                <div class="calendar-day">11</div>
-                                
-                                <div class="calendar-day">12</div>
-                                <div class="calendar-day">13</div>
-                                <div class="calendar-day">14</div>
-                                <div class="calendar-day today">15</div>
-                                <div class="calendar-day">16</div>
-                                <div class="calendar-day">17</div>
-                                <div class="calendar-day">18</div>
-                                
-                                <div class="calendar-day">19</div>
-                                <div class="calendar-day">20</div>
-                                <div class="calendar-day">21</div>
-                                <div class="calendar-day">22</div>
-                                <div class="calendar-day">23</div>
-                                <div class="calendar-day">24</div>
-                                <div class="calendar-day">25</div>
-                                
-                                <div class="calendar-day">26</div>
-                                <div class="calendar-day">27</div>
-                                <div class="calendar-day">28</div>
-                                <div class="calendar-day">29</div>
-                                <div class="calendar-day">30</div>
-                                <div class="calendar-day">31</div>
-                                <div class="calendar-day other-month">1</div>
-                            </div>
-                        </div>
+                
                         
-                        <div class="profile-card">
-                            <h3 class="section-title">Acciones Rápidas</h3>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary">
-                                    <i class="bi bi-file-earmark-text me-2"></i> Solicitar Documento
-                                </button>
-                                <button class="btn btn-outline-primary">
-                                    <i class="bi bi-calendar-plus me-2"></i> Solicitar Permiso
-                                </button>
-                                <button class="btn btn-outline-primary">
-                                    <i class="bi bi-chat-dots me-2"></i> Enviar Mensaje
-                                </button>
-                                <button class="btn btn-outline-primary">
-                                    <i class="bi bi-pencil-square me-2"></i> Actualizar Información
-                                </button>
-                            </div>
+                        
                         </div>
                     </div>
                 </div>
