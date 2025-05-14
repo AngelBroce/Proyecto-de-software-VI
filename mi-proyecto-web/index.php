@@ -2,7 +2,7 @@
 // Incluir el archivo de conexión
 include 'scripts/main.php';
 
-// Corregir la consulta SQL para usar la tabla `departamento` en lugar de `departamentos`
+// Consulta para obtener todos los empleados
 $query = "SELECT e.cedula, e.nombre1, e.apellido1, d.nombre AS departamento, c.nombre AS puesto, e.estado 
           FROM empleados e 
           LEFT JOIN departamento d ON e.departamento = d.codigo 
@@ -15,6 +15,48 @@ $empleados = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $empleados[] = $row;
+    }
+}
+
+// Contar empleados totales, activos e inactivos
+$totalEmpleados = count($empleados);
+$empleadosActivos = 0;
+$empleadosInactivos = 0;
+
+foreach ($empleados as $empleado) {
+    if ($empleado['estado'] == 1) {
+        $empleadosActivos++;
+    } else {
+        $empleadosInactivos++;
+    }
+}
+
+// Obtener actividad reciente (últimas acciones en la base de datos)
+$queryActividad = "SELECT * FROM (
+                    SELECT 'Empleado agregado' as tipo_accion, 
+                           CONCAT(nombre1, ' ', apellido1) as nombre_empleado, 
+                           f_contra as fecha_accion 
+                    FROM empleados 
+                    ORDER BY f_contra DESC 
+                    LIMIT 5
+                   ) as agregados
+                   UNION ALL
+                   SELECT * FROM (
+                    SELECT 'Empleado eliminado' as tipo_accion, 
+                           CONCAT(nombre1, ' ', apellido1) as nombre_empleado, 
+                           f_contra as fecha_accion 
+                    FROM e_eliminados 
+                    ORDER BY f_contra DESC 
+                    LIMIT 5
+                   ) as eliminados
+                   ORDER BY fecha_accion DESC
+                   LIMIT 5";
+
+$resultActividad = $conn->query($queryActividad);
+$actividades = [];
+if ($resultActividad && $resultActividad->num_rows > 0) {
+    while ($row = $resultActividad->fetch_assoc()) {
+        $actividades[] = $row;
     }
 }
 ?>
@@ -48,16 +90,11 @@ if ($result && $result->num_rows > 0) {
           </div>
           
           <div class="header-actions">
-            <div class="search-container">
-              <i class="bi bi-search search-icon"></i>
-              <input type="text" class="search-input" placeholder="Buscar...">
-            </div>
-            
-            <button class="btn btn-primary add-employee-btn">
+            <a href="creacionU.php" class="btn btn-primary add-employee-btn">
               Añadir Empleado
-            </button>
+            </a>
           </div>
-        </div>
+      </div>
         
         <!-- Stats Cards -->
         <div class="row stats-row">
@@ -68,7 +105,7 @@ if ($result && $result->num_rows > 0) {
               </div>
               <div class="stat-body">
                 <div class="stat-content">
-                  <span class="stat-number">120</span>
+                  <span class="stat-number"><?php echo $totalEmpleados; ?></span>
                   <span class="stat-description">Número total de empleados registrados.</span>
                 </div>
                 <div class="stat-chart">
@@ -91,7 +128,7 @@ if ($result && $result->num_rows > 0) {
               </div>
               <div class="stat-body">
                 <div class="stat-content">
-                  <span class="stat-number">100</span>
+                  <span class="stat-number"><?php echo $empleadosActivos; ?></span>
                   <span class="stat-description">Empleados actualmente activos.</span>
                 </div>
                 <div class="stat-chart">
@@ -114,7 +151,7 @@ if ($result && $result->num_rows > 0) {
               </div>
               <div class="stat-body">
                 <div class="stat-content">
-                  <span class="stat-number">20</span>
+                  <span class="stat-number"><?php echo $empleadosInactivos; ?></span>
                   <span class="stat-description">Empleados que ya no están activos.</span>
                 </div>
                 <div class="stat-chart">
@@ -183,35 +220,39 @@ if ($result && $result->num_rows > 0) {
               </div>
               <div class="stat-body">
                 <div class="activity-list">
-                  <div class="activity-item">
-                    <div class="activity-icon">
-                      <i class="bi bi-clock"></i>
+                  <?php if (!empty($actividades)): ?>
+                    <?php foreach ($actividades as $actividad): ?>
+                      <div class="activity-item">
+                        <div class="activity-icon">
+                          <i class="bi <?php echo ($actividad['tipo_accion'] == 'Empleado agregado') ? 'bi-person-plus' : 'bi-person-dash'; ?>"></i>
+                        </div>
+                        <div class="activity-content">
+                          <p class="activity-title"><?php echo $actividad['tipo_accion']; ?>: <?php echo htmlspecialchars($actividad['nombre_empleado']); ?></p>
+                          <p class="activity-time">
+                            <?php 
+                              $fecha = new DateTime($actividad['fecha_accion']);
+                              $ahora = new DateTime();
+                              $intervalo = $fecha->diff($ahora);
+                              
+                              if ($intervalo->d > 0) {
+                                echo 'Hace ' . $intervalo->d . ' día(s)';
+                              } elseif ($intervalo->h > 0) {
+                                echo 'Hace ' . $intervalo->h . ' hora(s)';
+                              } else {
+                                echo 'Hace ' . $intervalo->i . ' minuto(s)';
+                              }
+                            ?>
+                          </p>
+                        </div>
+                      </div>
+                    <?php endforeach; ?>
+                  <?php else: ?>
+                    <div class="activity-item">
+                      <div class="activity-content">
+                        <p class="activity-title">No hay actividad reciente</p>
+                      </div>
                     </div>
-                    <div class="activity-content">
-                      <p class="activity-title">Actualización de sistema</p>
-                      <p class="activity-time">Hace 2 horas</p>
-                    </div>
-                  </div>
-                  
-                  <div class="activity-item">
-                    <div class="activity-icon">
-                      <i class="bi bi-clock"></i>
-                    </div>
-                    <div class="activity-content">
-                      <p class="activity-title">Mantenimiento programado</p>
-                      <p class="activity-time">Hace 5 horas</p>
-                    </div>
-                  </div>
-                  
-                  <div class="activity-item">
-                    <div class="activity-icon">
-                      <i class="bi bi-clock"></i>
-                    </div>
-                    <div class="activity-content">
-                      <p class="activity-title">Nuevo empleado registrado</p>
-                      <p class="activity-time">Hace 1 día</p>
-                    </div>
-                  </div>
+                  <?php endif; ?>
                 </div>
               </div>
             </div>

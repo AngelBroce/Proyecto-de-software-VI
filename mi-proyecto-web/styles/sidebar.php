@@ -20,6 +20,10 @@
       <i class="bi bi-person-plus"></i>
       <span>Añadir Empleado</span>
     </a>
+    <a href="visualizacion.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'creacionU.php' ? 'active' : '' ?>">
+      <i class="bi bi-person-vcard"></i>
+      <span>Visualizacion</span>
+    </a>
   </nav>
   
   <div class="sidebar-footer">

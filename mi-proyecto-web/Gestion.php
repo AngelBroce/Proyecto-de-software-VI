@@ -363,30 +363,7 @@
                     deleteModal.hide();
                 }
             });
-        }
-
-        // Exportar a Excel
-        const exportBtn = document.getElementById('exportBtn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', function() {
-                // Crear un elemento temporal para descargar
-                let table = document.querySelector('table');
-                let tableHTML = table.outerHTML.replace(/ /g, '%20');
-                
-                // Crear un enlace de descarga
-                let downloadLink = document.createElement('a');
-                document.body.appendChild(downloadLink);
-                
-                // Nombre del archivo
-                let filename = 'empleados_' + new Date().toISOString().slice(0, 10) + '.xls';
-                
-                // Crear el enlace para descargar
-                downloadLink.href = 'data:application/vnd.ms-excel,' + tableHTML;
-                downloadLink.download = filename;
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-            });
-        }
+        }    
     });
     </script>
 </body>
