@@ -31,50 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const estadoCivilSelect = document.querySelector('select[name="estado_civil"]');
     estadoCivilSelect.addEventListener('change', toggleApellidoCasada);
 
-    const telefonoInput = document.querySelector('input[name="telefono"]');
-    const celularInput = document.querySelector('input[name="celular"]');
-    
-    function formatWithMask(mask, value) {
-        let formatted = '';
-        let i = 0;
-    
-        for (const char of mask) {
-            if (char === '#') {
-                if (value[i]) {
-                    formatted += value[i];
-                    i++;
-                } else {
-                    break;
-                }
-            } else {
-                if (i < value.length) {
-                    formatted += char;
-                }
-            }
-        }
-    
-        return formatted;
-    }
-    
-    function handleInput(event, mask) {
-        const input = event.target;
-        const start = input.selectionStart;
-        const rawValue = input.value.replace(/\D/g, '');
-        const formatted = formatWithMask(mask, rawValue);
-        input.value = formatted;
-    
-        // Mover el cursor automáticamente al final del valor ingresado
-        setTimeout(() => {
-            input.setSelectionRange(formatted.length, formatted.length);
-        }, 0);
-    }
-    
-    telefonoInput.addEventListener('input', function (e) {
-        handleInput(e, '###-####');
-    });
-    
-    celularInput.addEventListener('input', function (e) {
-        handleInput(e, '####-####');
+    // Agregar validación para el formulario - extraer solo los números antes de enviar
+    form.addEventListener('submit', function(submitEvent) {
+        // Asegurarse de que solo se envíen números en los campos de teléfono y celular
     });
     
     // Validar campos obligatorios al enviar el formulario

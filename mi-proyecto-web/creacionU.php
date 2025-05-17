@@ -202,14 +202,13 @@
                                 <h3>Información de Contacto</h3>
                             </div>
                             <div class="section-body">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="row g-3">                                    <div class="col-md-4">
                                         <label for="telefono">Teléfono </label>
-                                        <input type="text" class="form-control" name="telefono" maxlength="8" required placeholder="###-####">
+                                        <input type="text" class="form-control" name="telefono" maxlength="8" required placeholder="Teléfono">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="celular">Celular </label>
-                                        <input type="text" class="form-control" name="celular" maxlength="9" required placeholder="####-####">
+                                        <input type="text" class="form-control" name="celular" maxlength="9" required placeholder="Celular">
                                     </div>
                                     <div class="col-md-4">
                                         <label>Correo</label>
@@ -657,28 +656,6 @@
                 alert('Error al procesar la solicitud: ' + error.message);
             });
         }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const telefonoInput = document.querySelector('input[name="telefono"]');
-            const celularInput = document.querySelector('input[name="celular"]');
-
-            telefonoInput.addEventListener('input', function() {
-                let value = this.value.replace(/[^0-9]/g, '').slice(0, 7);
-                if (value.length >= 4) {
-                    value = value.slice(0, 3) + '-' + value.slice(3);
-                }
-                this.value = value;
-            });
-
-            celularInput.addEventListener('input', function() {
-                let value = this.value.replace(/[^0-9]/g, '').slice(0, 8);
-                if (value.length >= 5) {
-                    value = value.slice(0, 4) + '-' + value.slice(4);
-                }
-                this.value = value;
-            });
-        });
     </script>
     <script src="scripts/Gestion-script.js"></script>
     <script src="scripts/validacionI.js"></script>

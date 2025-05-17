@@ -42,6 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $celular = $_POST['celular'] ?? null;
     $telefono = $_POST['telefono'] ?? null;
 
+    // Asegurar que los números de teléfono y celular no contengan guiones
+    $telefono = preg_replace('/[^0-9]/', '', $telefono);
+    $celular = preg_replace('/[^0-9]/', '', $celular);
+
     // Generar correo institucional automáticamente
     $correo = $nombre1 . "." . $apellido1 . "@tudominio.com";
 

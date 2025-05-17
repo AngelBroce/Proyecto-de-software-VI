@@ -33,6 +33,10 @@ $calle = $conn->real_escape_string($_POST['calle']);
 $casa = $conn->real_escape_string($_POST['casa']);
 $comunidad = $conn->real_escape_string($_POST['comunidad']);
 
+// Asegurar que los números de teléfono y celular no contengan guiones
+$telefono = preg_replace('/[^0-9]/', '', $telefono);
+$celular = preg_replace('/[^0-9]/', '', $celular);
+
 // Actualizar la información del empleado
 $sql = "UPDATE empleados SET 
         nombre1 = '$nombre1',

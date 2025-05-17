@@ -382,12 +382,12 @@ include 'scripts/main.php';
                                         
                                         <div class="mb-3">
                                             <label for="editTelefono">Teléfono</label>
-                                            <input type="tel" class="form-control" id="editTelefono" name="telefono">
+                                            <input type="tel" class="form-control" id="editTelefono" maxlength="7"  name="telefono">
                                         </div>
                                         
                                         <div class="mb-3">
                                             <label for="editCelular">Celular</label>
-                                            <input type="tel" class="form-control" id="editCelular" name="celular">
+                                            <input type="tel" class="form-control" id="editCelular" maxlength="8" name="celular">
                                         </div>
                                     </div>
                                 </div>
