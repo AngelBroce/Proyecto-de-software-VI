@@ -104,10 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span>Iniciar Sesión</span>
                 </a>
-                <a href="#" class="nav-item">
-                    <i class="bi bi-question-circle"></i>
-                    <span>Ayuda</span>
-                </a>
             </nav>
             
             <div class="sidebar-footer">
