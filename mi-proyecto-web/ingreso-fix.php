@@ -148,12 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                     </div>
                                     
-                                    <div class="mb-4 form-check">
-                                        <input type="checkbox" class="form-check-input" id="remember">
-                                        <label class="form-check-label" for="remember">Recordar sesión</label>
-                                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
-                                    </div>
-                                    
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">Ingresar</button>
                                     </div>

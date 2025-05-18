@@ -104,23 +104,6 @@
                 <div class="table-card">
                     <div class="table-header">
                         <h3>Historial Empleados Registrados</h3>
-                        <div class="table-actions">
-                            <button class="btn btn-sm btn-outline-secondary" id="exportBtn">
-                                <i class="bi bi-download"></i> Exportar
-                            </button>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-gear"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#">Mostrar 10 registros</a></li>
-                                    <li><a class="dropdown-item" href="#">Mostrar 25 registros</a></li>
-                                    <li><a class="dropdown-item" href="#">Mostrar 50 registros</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#">Configurar columnas</a></li>
-                                </ul>
-                            </div>
-                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -165,8 +148,6 @@
                                     echo "<td><span class='status-badge " . ($row['estado'] == 1 ? 'active' : 'inactive') . "'>" . ($row['estado'] == 1 ? 'Activo' : 'Inactivo') . "</span></td>";
                                     echo "<td>";
                                     echo "<div class='action-buttons'>";
-                                    echo "<button class='btn btn-sm btn-icon view-details' data-cedula='" . $row['cedula'] . "' title='Ver detalles'><i class='bi bi-eye'></i></button>";
-                                    echo "<button class='btn btn-sm btn-icon' title='Editar'><i class='bi bi-pencil'></i></button>";
                                     echo "<button class='btn btn-sm btn-icon delete' title='Eliminar'><i class='bi bi-trash'></i></button>";
                                     echo "</div>";
                                     echo "</td>";
@@ -235,69 +216,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal de Detalles del Empleado -->
-    <div class="modal fade" id="employeeDetailModal" tabindex="-1" aria-labelledby="employeeDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="employeeDetailModalLabel">Detalles del Empleado</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="employeeDetails">
-                    <div class="employee-detail-header">
-                        <div class="employee-avatar" id="employeeInitials">--</div>
-                        <div class="employee-info">
-                            <h3 id="employeeName">Cargando...</h3>
-                            <p id="employeePosition">Cargando...</p>
-                            <span class="status-badge" id="employeeStatus">-</span>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h5>Información Personal</h5>
-                            <ul class="detail-list">
-                                <li><span>Cédula:</span> <span id="employeeCedula">-</span></li>
-                                <li><span>Correo:</span> <span id="employeeEmail">-</span></li>
-                                <li><span>Teléfono:</span> <span id="employeePhone">-</span></li>
-                                <li><span>Celular:</span> <span id="employeeMobile">-</span></li>
-                                <li><span>Fecha Nacimiento:</span> <span id="employeeBirthdate">-</span></li>
-                                <li><span>Género:</span> <span id="employeeGender">-</span></li>
-                                <li><span>Estado Civil:</span> <span id="employeeMaritalStatus">-</span></li>
-                                <li><span>Tipo de Sangre:</span> <span id="employeeBloodType">-</span></li>
-                                <li><span>Nacionalidad:</span> <span id="employeeNationality">-</span></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Información Laboral</h5>
-                            <ul class="detail-list">
-                                <li><span>Departamento:</span> <span id="employeeDepartment">-</span></li>
-                                <li><span>Cargo:</span> <span id="employeePosition2">-</span></li>
-                                <li><span>Fecha Contratación:</span> <span id="employeeHireDate">-</span></li>
-                            </ul>
-                            
-                            <h5 class="mt-4">Dirección</h5>
-                            <ul class="detail-list">
-                                <li><span>Provincia:</span> <span id="employeeProvince">-</span></li>
-                                <li><span>Distrito:</span> <span id="employeeDistrict">-</span></li>
-                                <li><span>Corregimiento:</span> <span id="employeeCorregimiento">-</span></li>
-                                <li><span>Calle:</span> <span id="employeeStreet">-</span></li>
-                                <li><span>Casa:</span> <span id="employeeHouse">-</span></li>
-                                <li><span>Comunidad:</span> <span id="employeeCommunity">-</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary">Editar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Confirmación de Eliminación -->
+<!-- Modal de Confirmación de Eliminación -->
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
